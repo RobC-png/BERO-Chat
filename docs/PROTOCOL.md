@@ -98,11 +98,3 @@ Server adds to client list and broadcasts updated client list
 7. **Server removes client** and broadcasts updated list
 
 ---
-
-## IMPLEMENTATION NOTES
-
-- **Serialization**: Uses Python's `pickle` module for message content
-- **Encoding**: UTF-8 text encoding for headers
-- **Threading**: Server uses one thread per client for concurrent handling
-- **Persistence**: All messages stored in server's msg_dict during session
-- **Scalability**: Currently limited by single server, could be optimized with database

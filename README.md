@@ -52,9 +52,3 @@ python src/client_cli/client.py
 3. Pickled message content
 
 See [PROTOCOL.md](docs/PROTOCOL.md) for details.
-
-## Known Limitations
-
-- Messages stored in RAM only (cleared on restart)
-- No authentication or encryption
-- Local network only by default (can be configured for remote)
