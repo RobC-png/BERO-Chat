@@ -461,7 +461,6 @@ def init_UI():
     #window, name, logo
     window = CTk()
     window.title("BERO Chat")
-    window.state('zoomed')
     MSG_HEIGHT = 50
 
     # Try to load icon
@@ -482,6 +481,9 @@ def init_UI():
             print(f"[DEBUG] Project root: {project_root}")
     except Exception as e:
         print(f"[DEBUG] Error loading icon: {e}")
+    
+    # Maximize window after setup to avoid flash
+    window.state('zoomed')
 
     #create the frames
     frame_main = CTkFrame(window)
@@ -562,27 +564,57 @@ def init_UI():
     canvas.config(scrollregion=canvas.bbox("all"))
 
     #===LOGIN FRAME===========================================================================
-    ip_label = CTkLabel(frame_login, text="Enter server IP", text_color="white", anchor=CENTER)
-    ip_label.configure(font=(FONT, 20))
-    ip_label.grid(row=1, column=2, pady=20, sticky="n")
+    # Configure login frame grid for better layout
+    frame_login.grid_columnconfigure((0, 4), weight=1)
+    frame_login.grid_columnconfigure((1, 2, 3), weight=0)
+    
+    # Try to load and display logo image at top
+    try:
+        logo_img = Image.open(ico_path)
+        # Resize to a larger size for the login screen (e.g., 128x128)
+        logo_img = logo_img.resize((128, 128), Image.Resampling.LANCZOS)
+        logo_photo = CTkImage(light_image=logo_img, dark_image=logo_img, size=(128, 128))
+        
+        logo_label = CTkLabel(frame_login, image=logo_photo, text="")
+        logo_label.grid(row=0, column=1, columnspan=3, pady=(40, 10), sticky="n")
+    except Exception as e:
+        print(f"[DEBUG] Could not load logo image: {e}")
+    
+    # Title text
+    title_label = CTkLabel(frame_login, text="BERO Chat", text_color=LIME_GREEN, anchor=CENTER)
+    title_label.configure(font=(FONT, 40, "bold"))
+    title_label.grid(row=1, column=1, columnspan=3, pady=(10, 5), sticky="n")
+    
+    # Subtitle text
+    subtitle_label = CTkLabel(frame_login, text="Connect and communicate", text_color="white", anchor=CENTER)
+    subtitle_label.configure(font=(FONT, 16))
+    subtitle_label.grid(row=2, column=1, columnspan=3, pady=(0, 40), sticky="n")
+    
+    # Server IP label and entry (left side)
+    ip_label = CTkLabel(frame_login, text="Server IP", text_color="white", anchor=CENTER)
+    ip_label.configure(font=(FONT, 16))
+    ip_label.grid(row=3, column=1, pady=(20, 10), sticky="s")
 
-    # IP entry box
     global ip_area
-    ip_area = CTkEntry(frame_login, border_width=0, height=rel_Height(70), width=rel_Width(300), font=(FONT, 12))
-    ip_area.insert(0, "127.0.0.1")  # Default value
-    ip_area.grid(row=2, column=2, sticky="n", pady=20)
+    ip_area = CTkEntry(frame_login, border_width=2, height=rel_Height(70), width=rel_Width(280), font=(FONT, 14), 
+                       placeholder_text="e.g., 127.0.0.1")
+    ip_area.insert(0, "127.0.0.1")
+    ip_area.grid(row=4, column=1, sticky="n", pady=10, padx=(0, 5))
 
-    chat_label = CTkLabel(frame_login, text="Enter your username", text_color="white", anchor=CENTER)
-    chat_label.configure(font=(FONT, 20))
-    chat_label.grid(row=3, column=2, pady=20, sticky="n")
+    # Username label and entry (right side)
+    username_label_login = CTkLabel(frame_login, text="Username", text_color="white", anchor=CENTER)
+    username_label_login.configure(font=(FONT, 16))
+    username_label_login.grid(row=3, column=3, pady=(20, 10), sticky="s")
 
-    # Username entry box
-    username_area = CTkEntry(frame_login, border_width=0, height=rel_Height(70), width=rel_Width(300), font=(FONT, 12))
-    username_area.grid(row=4, column=2, sticky="n", pady=20)
+    username_area = CTkEntry(frame_login, border_width=2, height=rel_Height(70), width=rel_Width(280), font=(FONT, 14),
+                             placeholder_text="Enter your name")
+    username_area.grid(row=4, column=3, sticky="n", pady=10, padx=(5, 0))
 
-    # Login button
-    send_button = CTkButton(frame_login, text="Login", command=LoginButton, corner_radius=5, font=(FONT, 20), width=rel_Width(160), height=rel_Height(80))
-    send_button.grid(row=5, column=2, sticky="n", pady=(50, 20))
+    # Login button (centered below both fields)
+    login_button = CTkButton(frame_login, text="Login", command=LoginButton, corner_radius=5, 
+                            font=(FONT, 20), width=rel_Width(200), height=rel_Height(80),
+                            fg_color=LIME_GREEN, hover_color="#0d8a66")
+    login_button.grid(row=5, column=1, columnspan=3, sticky="n", pady=(40, 20))
 
     #for exiting the window properly
     window.protocol("WM_DELETE_WINDOW", stopWindow)
