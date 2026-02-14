@@ -19,8 +19,11 @@ from PIL import Image
 HEADER = 128
 PORT = 5050
 FORMAT = 'utf-8'
-SERVER = "127.0.0.1"
-ADDR = (SERVER, PORT)
+SEPERATION_STR = "/"
+
+# Server IP and ADDR (will be set at login)
+SERVER = None
+ADDR = None
 
 # UI Configuration
 FONT = "Consolas"
@@ -71,8 +74,15 @@ def startConnectingThread():
     connectThread.start()
 
 def LoginButton():
-    """Handle login button click - save username and transition to main chat interface."""
-    global username_area, username, username_label, client_list
+    """Handle login button click - save username and IP, then transition to main chat interface."""
+    global username_area, ip_area, username, username_label, client_list, SERVER, ADDR
+    
+    server_ip = ip_area.get().strip()
+    if not server_ip:
+        server_ip = "127.0.0.1"
+    
+    SERVER = server_ip
+    ADDR = (SERVER, PORT)
     
     username = username_area.get()
     if username:
@@ -541,17 +551,27 @@ def init_UI():
     canvas.config(scrollregion=canvas.bbox("all"))
 
     #===LOGIN FRAME===========================================================================
-    chat_label = CTkLabel(frame_login, text="Enter your username", text_color="white", anchor= CENTER)
+    ip_label = CTkLabel(frame_login, text="Enter server IP", text_color="white", anchor=CENTER)
+    ip_label.configure(font=(FONT, 20))
+    ip_label.grid(row=1, column=2, pady=20, sticky="n")
+
+    # IP entry box
+    global ip_area
+    ip_area = CTkEntry(frame_login, border_width=0, height=rel_Height(70), width=rel_Width(300), font=(FONT, 12))
+    ip_area.insert(0, "127.0.0.1")  # Default value
+    ip_area.grid(row=2, column=2, sticky="n", pady=20)
+
+    chat_label = CTkLabel(frame_login, text="Enter your username", text_color="white", anchor=CENTER)
     chat_label.configure(font=(FONT, 20))
-    chat_label.grid(row=1, column=2, pady=20, sticky="n",)
+    chat_label.grid(row=3, column=2, pady=20, sticky="n")
 
-    # #message entry box
+    # Username entry box
     username_area = CTkEntry(frame_login, border_width=0, height=rel_Height(70), width=rel_Width(300), font=(FONT, 12))
-    username_area.grid(row=2, column=2, sticky="n", pady=20)
+    username_area.grid(row=4, column=2, sticky="n", pady=20)
 
-    #login button
+    # Login button
     send_button = CTkButton(frame_login, text="Login", command=LoginButton, corner_radius=5, font=(FONT, 20), width=rel_Width(160), height=rel_Height(80))
-    send_button.grid(row=3, column=2, sticky="n", pady=(50, 20))
+    send_button.grid(row=5, column=2, sticky="n", pady=(50, 20))
 
     #for exiting the window properly
     window.protocol("WM_DELETE_WINDOW", stopWindow)

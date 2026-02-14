@@ -5,11 +5,13 @@ import pickle
 import threading
 
 # Server connection settings
-IP = "127.0.0.1"
 PORT = 5050
 FORMAT = "utf-8"
 HEADER = 128
 SEPERATION_STR = "/"
+
+# Server IP (will be set at startup)
+IP = None
 
 def send_message(client, msg, msg_type, xinfo=""):
     """Send a message to the server using the protocol"""
@@ -75,6 +77,13 @@ def receive_thread(client, username):
 
 def main():
     """Main function for CLI chat client."""
+    global IP
+    
+    # Get server IP from user
+    IP = input("Enter server IP (default: 127.0.0.1): ").strip()
+    if not IP:
+        IP = "127.0.0.1"
+    
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
