@@ -466,11 +466,22 @@ def init_UI():
 
     # Try to load icon
     try:
-        ico_path = os.path.join(script_dir, "logo.ico")
+        # Get the project root directory (go up 2 levels from src/client_ui/)
+        project_root = os.path.dirname(os.path.dirname(script_dir))
+        ico_path = os.path.join(project_root, "img", "BEROChatIcon.ico")
+        
+        # Debug: print the path to help troubleshoot
+        print(f"[DEBUG] Looking for icon at: {ico_path}")
+        print(f"[DEBUG] Icon exists: {os.path.exists(ico_path)}")
+        
         if os.path.exists(ico_path):
             window.iconbitmap(ico_path)
-    except Exception:
-        pass
+            print("[DEBUG] Icon loaded successfully")
+        else:
+            print(f"[DEBUG] Icon not found. Script dir: {script_dir}")
+            print(f"[DEBUG] Project root: {project_root}")
+    except Exception as e:
+        print(f"[DEBUG] Error loading icon: {e}")
 
     #create the frames
     frame_main = CTkFrame(window)
