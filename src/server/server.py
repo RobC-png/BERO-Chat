@@ -3,6 +3,7 @@ from enum import Flag
 import socket #for networking
 import threading #for running multiple things at once
 import pickle
+import sys
 
 #MSG types
 #pums = public message
@@ -26,8 +27,6 @@ import pickle
 #set standard valuessa
 HEADER = 128 #byte-ammount to transmit the length of the message
 PORT = 5050 #port (door) the server is using
-SERVER = "127.0.0.1" #gets the IP adress of the server | Robin PC: "192.168.0.45" | Benni PC: "192.168.0.80"
-ADDR = (SERVER, PORT) #combines [SERVER] and [PORT] into [ADDR] tupel 
 FORMAT = 'utf-8' #sets the standard text encoding
 DISCONECT_MSG = "!DISCONNECT" #message to disconnect from the server
 SEPERATION_STR = "/"
@@ -37,10 +36,37 @@ msg_dict = {}
 msg_list = [] #create an empty list
 client_list = [] #[[conn, addr, name], [conn, addr, name]]
 
+# Server configuration (will be set at startup)
+SERVER = None
+ADDR = None
+server = None
 
-#setting up the server
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #creates a server object and sets parameters (type of data, type of sending it)
-server.bind(ADDR) #binds the server to the IP and port of [ADDR]
+def configure_server():
+    """Allow user to choose between localhost, private IP, or public hosting"""
+    global SERVER, ADDR, server
+    
+    print("\n[SERVER CONFIGURATION]")
+    print("1. Localhost (127.0.0.1) - same machine only")
+    print("2. Private IP - local network only (safest for LANs)")
+    print("3. Public (0.0.0.0) - all interfaces (less secure)")
+    
+    choice = input("Select hosting mode (1, 2, or 3): ").strip()
+    
+    if choice == "2":
+        SERVER = input("Enter your private IP (e.g., 192.168.0.45): ").strip()
+        print(f"[INFO] Server will listen on {SERVER}")
+    elif choice == "3":
+        SERVER = "0.0.0.0"
+        print("[WARNING] Server listening on all interfaces (0.0.0.0)")
+        print("[WARNING] This is less secure - consider using private IP instead")
+    else:
+        SERVER = "127.0.0.1"
+        print("[INFO] Server will listen on localhost only (127.0.0.1)")
+    
+    ADDR = (SERVER, PORT)
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(ADDR)
+    print(f"[BOUND] {SERVER}:{PORT}\n")
 
 
 #starting the server
@@ -286,4 +312,5 @@ def saveMsgToDict(msg, type, sender, *userlist):
 
 
 print("[SERVER STARTING]")
+configure_server()
 start()
