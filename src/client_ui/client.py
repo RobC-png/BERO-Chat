@@ -7,7 +7,6 @@ import threading
 import customtkinter
 import tkinter
 from tkinter import *
-from customtkinter import *
 from PIL import Image
 
 # Message type codes
@@ -354,7 +353,7 @@ def newClientConnectedUI(user_id, row):
     username = client_list[user_id]
 
     #add a new Label 
-    newButton = CTkButton(frame_main, text=username, font=(FONT, 12), command=lambda: ContactButtonEvent(user_id), height=rel_Height(45), border_width=3, border_color=LIME_GREEN, fg_color=DARK_BG_GREY) 
+    newButton = customtkinter.CTkButton(frame_main, text=username, font=(FONT, 12), command=lambda: ContactButtonEvent(user_id), height=rel_Height(45), border_width=3, border_color=LIME_GREEN, fg_color=DARK_BG_GREY) 
     newButton.grid(row=_row, column=0, sticky="nesw",padx=rel_Width(20) ,pady=rel_Height(8))    
     client_buttons_list.append(newButton)
 
@@ -367,7 +366,6 @@ def clientDisConnectedUI(clientIndex, newClientCount):
 
     #remove label and checkbox from the lists
     client_buttons_list.pop(clientIndex)
- 
 
 
 #light and dark mode
@@ -459,7 +457,7 @@ def init_UI():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     #window, name, logo
-    window = CTk()
+    window = customtkinter.CTk()
     window.title("BERO Chat")
     MSG_HEIGHT = 50
 
@@ -486,8 +484,8 @@ def init_UI():
     window.state('zoomed')
 
     #create the frames
-    frame_main = CTkFrame(window)
-    frame_login = CTkFrame(window)
+    frame_main = customtkinter.CTkFrame(window)
+    frame_login = customtkinter.CTkFrame(window)
     for frame in (frame_main, frame_login):
         frame.grid(row=0,column=0,sticky='nsew')
 
@@ -502,34 +500,34 @@ def init_UI():
     frame_login.grid_columnconfigure(2, weight=1)
 
 
-    chat_label = CTkLabel(frame_main, text="Settings/Chat")
+    chat_label = customtkinter.CTkLabel(frame_main, text="Settings/Chat")
     chat_label.configure(font=(FONT, 15))
     chat_label.grid(row=0, column=0, padx=(20, 80))
 
     _Checkbox = customtkinter.CTkCheckBox(master=frame_main, text="", command=toggleFullscreen)
     _Checkbox.grid(row=0, column=1, sticky="nw", pady=30)
 
-    chat_label = CTkLabel(frame_main, text="Chat:", text_color="white")
+    chat_label = customtkinter.CTkLabel(frame_main, text="Chat:", text_color="white")
     chat_label.configure(font=(FONT, 15))
     chat_label.grid(row=0, column=2)
 
 
     #connect to server button
-    server_button = CTkButton(frame_main, text="Connect to Server", command=startConnectingThread, corner_radius=5, font=(FONT, 15), width=80, height=50)
+    server_button = customtkinter.CTkButton(frame_main, text="Connect to Server", command=startConnectingThread, corner_radius=5, font=(FONT, 15), width=80, height=50)
     server_button.grid(row=1, column=0, sticky="ne", pady=30)
 
-    info_label = CTkLabel(frame_main, text="Logged in as:", text_color="white", font=(FONT, 15))
+    info_label = customtkinter.CTkLabel(frame_main, text="Logged in as:", text_color="white", font=(FONT, 15))
     info_label.grid(row=2, column=0)
 
-    username_label = CTkLabel(frame_main, text="[USERNAME]", text_color="white", font=(FONT, 15))
+    username_label = customtkinter.CTkLabel(frame_main, text="[USERNAME]", text_color="white", font=(FONT, 15))
     username_label.grid(row=3, column=0, pady=(0, 20))
 
     #message entry box
-    input_area = CTkEntry(frame_main, border_width=0, font=(FONT, 13))
+    input_area = customtkinter.CTkEntry(frame_main, border_width=0, font=(FONT, 13))
     input_area.grid(row=40, column=2, sticky="nsew", pady=10)
 
     #send button
-    send_button = CTkButton(frame_main, text="send", command=send_button_, corner_radius=5, font=(FONT, 12), width=rel_Width(80), height=rel_Height(50))
+    send_button = customtkinter.CTkButton(frame_main, text="send", command=send_button_, corner_radius=5, font=(FONT, 12), width=rel_Width(80), height=rel_Height(50))
     send_button.grid(row=40, column=3, columnspan=2, pady=10, padx=(0, 10))
 
    
@@ -538,7 +536,7 @@ def init_UI():
     optionmenu_1.grid(row=40, column=0, pady=10, padx=20, sticky="nesw")
 
     #Create a frame for the canvas with non-zero row&column weights
-    frame_canvas = CTkFrame(frame_main, border_width=0)
+    frame_canvas = customtkinter.CTkFrame(frame_main, border_width=0)
     frame_canvas.grid(row=1, column=2, columnspan=2, rowspan=35, sticky="nesw")
     frame_canvas.grid_rowconfigure(0, weight=1)
     frame_canvas.grid_columnconfigure(0, weight=1)
@@ -549,12 +547,12 @@ def init_UI():
     canvas.grid(row=0, column=0, sticky="news", columnspan=30)
 
     # Link a scrollbar to the canvas
-    vsb = CTkScrollbar(frame_main, command=canvas.yview)
+    vsb = customtkinter.CTkScrollbar(frame_main, command=canvas.yview)
     vsb.grid(row=1, column=4, rowspan=35, sticky="ns", padx=(0, 10))
     canvas.configure(yscrollcommand=vsb.set)
 
     # Create a frame to contain the buttons
-    frame_labels = CTkFrame(canvas, fg_color=LIGHT_BG_GREY)
+    frame_labels = customtkinter.CTkFrame(canvas, fg_color=LIGHT_BG_GREY)
     resize_frame = canvas.create_window((0, 0), window=frame_labels, anchor='nw',width=frame_canvas.winfo_width(), height=frame_canvas.winfo_height())
 
     # Update buttons frames idle tasks to let tkinter calculate buttons sizes
